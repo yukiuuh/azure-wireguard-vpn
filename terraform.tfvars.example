@@ -1,0 +1,22 @@
+azure_subscription_id            = ""
+azure_subscription_tenant_id     = ""
+azure_service_principal_appid    = ""
+azure_service_principal_password = ""
+
+wg_clients = [
+  {
+    friendly_name = "Home",
+    private_key   = "wireguard client 1 private key",
+    public_key    = "wireguard client 1 public key",
+    client_ip     = "10.1.0.2"
+  },
+  {
+    friendly_name = "Office",
+    private_key   = "wireguard client 2 private key",
+    public_key    = "wireguard server 2 public key",
+    client_ip     = "10.1.0.3"
+  }
+]
+wg_server_private_key = "wireguard server private key"
+wg_server_public_key  = "wireguard server public key"
+wg_server_net = "10.1.0.1/24"

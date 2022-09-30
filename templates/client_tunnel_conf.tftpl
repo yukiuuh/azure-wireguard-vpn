@@ -1,0 +1,10 @@
+# ${friendly_name}
+[Interface]
+Address = ${wg_client_ip}
+PrivateKey = ${wg_client_private_key}
+
+[Peer]
+PublicKey = ${wg_server_public_key}
+AllowedIPs = ${wg_server_net}
+PersistentKeepalive = ${wg_persistent_keepalive}
+Endpoint = ${wg_server_public_ip}:${wg_server_port}
