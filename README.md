@@ -20,6 +20,8 @@ https://learn.microsoft.com/ja-jp/azure/developer/terraform/get-started-windows-
 
 ### Generate WireGuard keypairs
 
+open Git Bash
+
 ``` 
 cd ./wgkeys
 
@@ -61,4 +63,11 @@ terraform output -raw tls_private_key > azure.pem
 ./connect_bastion.sh ./azure.pem
 
 ./connect_wg.sh ./azure.pem
+```
+
+### Destroy
+
+```
+terraform plan -destroy
+terraform apply -destroy
 ```
