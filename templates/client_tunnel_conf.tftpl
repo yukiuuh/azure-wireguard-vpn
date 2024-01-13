@@ -2,9 +2,16 @@
 [Interface]
 Address = ${wg_client_ip}
 PrivateKey = ${wg_client_private_key}
+%{ if wg_nat }
+PostUp = sysctl net.ipv4.ip_forward=1
+PostUp = iptables -A FORWARD -i %i -s ${wg_server_net} -j ACCEPT
+PostUp = iptables -t nat -A POSTROUTING -s ${wg_server_net} -o e+ -j MASQUERADE
+PostDown = iptables -A FORWARD -i %i -s ${wg_server_net} -j ACCEPT
+PostDown = iptables -t nat -D POSTROUTING -s ${wg_server_net} -o e+ -j MASQUERADE
+%{ endif }
 
 [Peer]
 PublicKey = ${wg_server_public_key}
 AllowedIPs = ${wg_server_net}
 PersistentKeepalive = ${wg_persistent_keepalive}
-Endpoint = ${wg_server_public_ip}:${wg_server_port}
+Endpoint = ${wg_server_fqdn}:${wg_server_port}

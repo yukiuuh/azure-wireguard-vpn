@@ -10,6 +10,10 @@ output "wg_public_ip_address" {
   value = azurerm_linux_virtual_machine.wireguard.public_ip_address
 }
 
+output "wg_fqdn" {
+  value = azurerm_public_ip.wgpublicip.fqdn
+}
+
 output "wg_private_ip_address" {
   value = azurerm_linux_virtual_machine.wireguard.private_ip_address
 }

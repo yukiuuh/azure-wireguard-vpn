@@ -20,3 +20,4 @@ wg_clients = [
 wg_server_private_key = "wireguard server private key"
 wg_server_public_key  = "wireguard server public key"
 wg_server_net = "10.1.0.1/24"
+wg_domain_name_label  = "domain-name-label"

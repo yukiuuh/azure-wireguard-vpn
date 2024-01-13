@@ -6,11 +6,12 @@ resource "random_pet" "rg-name" {
 resource "local_file" "client_conf" {
   count = length(var.wg_clients)
   content = templatefile("${path.module}/templates/client_tunnel_conf.tftpl", {
-    wg_server_public_ip     = azurerm_linux_virtual_machine.wireguard.public_ip_address,
+    wg_server_fqdn          = azurerm_public_ip.wgpublicip.fqdn,
     wg_server_net           = var.wg_server_net,
     wg_server_public_key    = var.wg_server_public_key,
     friendly_name           = var.wg_clients[count.index].friendly_name
     wg_client_private_key   = var.wg_clients[count.index].private_key
+    wg_nat                  = var.wg_clients[count.index].nat
     wg_client_ip            = "${var.wg_clients[count.index].client_ip}/24"
     wg_server_port          = var.wg_server_port,
     wg_persistent_keepalive = var.wg_persistent_keepalive
@@ -24,6 +25,8 @@ data "template_file" "wg_client_data_json" {
   count    = length(var.wg_clients)
 
   vars = {
+    home_net             = var.home_net,
+    wg_nat               = var.wg_clients[count.index].nat,
     friendly_name        = var.wg_clients[count.index].friendly_name
     wg_client_public_key = var.wg_clients[count.index].public_key
     wg_client_ip         = "${var.wg_clients[count.index].client_ip}/32"
@@ -60,6 +63,7 @@ resource "azurerm_public_ip" "bastionpublicip" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
+
 }
 resource "azurerm_public_ip" "wgpublicip" {
   name                = "wgPublicIP"
@@ -67,6 +71,7 @@ resource "azurerm_public_ip" "wgpublicip" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
+  domain_name_label   = var.wg_domain_name_label
 
 }
 
@@ -177,7 +182,7 @@ resource "azurerm_linux_virtual_machine" "bastion" {
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.bastionnic.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_B1ls"
 
   os_disk {
     name                 = "bastionOsDisk"
@@ -215,7 +220,7 @@ resource "azurerm_linux_virtual_machine" "wireguard" {
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = ["${azurerm_network_interface.wgnic.id}"]
-  size                  = "Standard_B1s"
+  size                  = "Standard_B1ls"
 
   os_disk {
     name                 = "wgOsDisk"

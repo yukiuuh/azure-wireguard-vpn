@@ -11,7 +11,8 @@ variable "wg_clients" {
     friendly_name = string,
     public_key    = string,
     private_key   = string,
-    client_ip     = string
+    client_ip     = string,
+    nat           = optional(bool, false)
   }))
 }
 variable "wg_config_prefix" {
@@ -19,7 +20,7 @@ variable "wg_config_prefix" {
 }
 
 variable "wg_server_net" {
-  default = "10.1.0.1/24"
+  default = "10.1.0.0/24"
 }
 
 variable "wg_server_port" {
@@ -41,4 +42,10 @@ variable "wg_server_interface" {
   default = "eth0"
 }
 
+variable "wg_domain_name_label" {
+  type = string
+}
 
+variable "home_net" {
+  default = "192.168.0.0/24"
+}
